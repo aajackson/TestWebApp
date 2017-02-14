@@ -6,6 +6,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using TestWebApp.Models;
+using Microsoft.Owin.Security;
+using System.Web.Configuration;
 
 namespace TestWebApp
 {
@@ -34,7 +36,7 @@ namespace TestWebApp
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
                 }
-            });            
+            });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
@@ -54,15 +56,15 @@ namespace TestWebApp
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: WebConfigurationManager.AppSettings["FacebookClientID"],
+               appSecret: WebConfigurationManager.AppSettings["FacebookClientSecret"]);
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = WebConfigurationManager.AppSettings["GoogleClientID"],
+                ClientSecret = WebConfigurationManager.AppSettings["GoogleClientSecret"]
+            });
         }
     }
 }
